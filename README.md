@@ -16,3 +16,21 @@ rustup add components
 ```
 rustup component add rust-src --toolchain nightly-aarch64-apple-darwin
 ```
+
+create bootimage
+```
+cargo install bootimage
+cargo bootimage
+```
+
+intall qemu
+```
+brew intall qemu
+```
+
+run my os in qemu
+```
+cargo run
+```
+cargo run equals `bootimage runner` configured in .cargo/config.toml.  
+bootimage runner command link my os and bootloader and start qemu.  
