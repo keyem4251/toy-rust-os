@@ -7,8 +7,10 @@ edition = "2021"
 
 [dependencies]
 
+# cargo build時に使用
 [profile.dev]
-panic = "abort"
+panic = "abort" # アンワインドの無効化
 
+# cargo build --release時に使用
 [profile.release]
-panic = "abort"
+panic = "abort" # アンワインドの無効化
