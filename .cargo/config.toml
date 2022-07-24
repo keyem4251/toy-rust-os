@@ -1,0 +1,8 @@
+[unstable]
+build-std = ["core", "compiler_builtins"]
+
+[unstable]
+build-std-features = ["compiler-builtins-mem"]
+
+[build]
+target = "x86_64-toy-rust-os.json"
