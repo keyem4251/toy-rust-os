@@ -57,6 +57,7 @@ pub struct Writer {
 }
 
 impl Writer {
+    // 1つのASCII文字を書く
     pub fn write_byte(&mut self, byte: u8) {
         match byte {
             b'\n' => self.new_line(), // 改行の場合何も出力しない
@@ -82,6 +83,18 @@ impl Writer {
 
                 // 現在の列の位置を進める
                 self.column_position += 1;
+            }
+        }
+    }
+
+    // 文字列全体を出力
+    pub fn write_string(&mut self, s: &str) {
+        for byte in s.bytes() {
+            match byte {
+                // 出力可能なASCIIバイトか改行コード
+                0x20..=0x7e | b'\n' => self.write_byte(byte),
+                // 出力可能なASCIIバイトではない
+                 _ => self.write_byte(0xfe),
             }
         }
     }
