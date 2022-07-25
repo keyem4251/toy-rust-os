@@ -3,6 +3,8 @@
 
 use core::panic::PanicInfo;
 
+mod vga_buffer;
+
 static HELLO: &[u8] = b"Hello World!";
 
 // リンカが_startという関数を探すためエントリポイントを定義
