@@ -3,7 +3,7 @@
 #[repr(u8)]
 pub enum Colr {
     Black = 0,
-    Blue = 1, 
+    Blue = 1,
     Green = 2,
     Cyan = 3,
     Red = 4,
