@@ -60,7 +60,8 @@ impl Writer {
     pub fn write_byte(&mut self, byte: u8) {
         match byte {
             b'\n' => self.new_line(), // 改行の場合何も出力しない
-            byte => { // 改行以外の場合バイトを出力する
+            byte => {
+                // 改行以外の場合バイトを出力する
 
                 // 現在の行がいっぱいかを確認
                 // いっぱいの場合は行を折り返す
