@@ -25,7 +25,7 @@ $ cargo bootimage
 
 intall qemu
 ```
-$ brew intall qemu
+$ brew install qemu
 ```
 
 run my os in qemu
