@@ -12,7 +12,7 @@ rustup set nightly
 $ rustup override set nightly
 ```
 
-rustup add components
+rustup add component
 ```
 $ rustup component add rust-src --toolchain nightly-aarch64-apple-darwin
 ```
