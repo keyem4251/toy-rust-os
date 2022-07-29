@@ -23,7 +23,7 @@ $ cargo install bootimage
 $ cargo bootimage
 ```
 
-intall qemu
+install qemu
 ```
 $ brew install qemu
 ```
