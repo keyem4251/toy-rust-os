@@ -57,11 +57,6 @@ pub struct Writer {
 }
 
 impl Writer {
-
-    pub fn new(column_position: usize, color_code: ColorCode, buffer: &'static mut Buffer) -> Self {
-        Writer { column_position, color_code, buffer }
-    }
-
     // 1つのASCII文字を書く
     pub fn write_byte(&mut self, byte: u8) {
         match byte {
@@ -110,11 +105,11 @@ impl Writer {
 }
 
 pub fn print_something() {
-    let mut writer = Writer::new(
-        0, 
-        ColorCode::new(Color::Yellow, Color::Black),
-        unsafe { &mut *(0xb8000 as *mut Buffer) },
-    );
+    let mut writer = Writer {
+        column_position: 0, 
+        color_code: ColorCode::new(Color::Yellow, Color::Black),
+        buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
+    };
 
     writer.write_byte(b'H');
     writer.write_string("ello ");
