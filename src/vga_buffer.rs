@@ -46,6 +46,7 @@ const BUFFER_HEIGHT: usize = 25;
 const BUFFER_WIDTH: usize = 80;
 
 // テキストバッファ
+// volatileを使用して読み込み、書き込みがrustコンパイラの最適化により取り除かれるのを防ぐ
 #[repr(transparent)]
 struct Buffer {
     chars: [[Volatile<ScreenChar>; BUFFER_WIDTH]; BUFFER_HEIGHT],
