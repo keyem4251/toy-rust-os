@@ -1,3 +1,5 @@
+use volatile::Volatile;
+
 // 色を定義
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -46,7 +48,7 @@ const BUFFER_WIDTH: usize = 80;
 // テキストバッファ
 #[repr(transparent)]
 struct Buffer {
-    chars: [[ScreenChar; BUFFER_WIDTH]; BUFFER_HEIGHT],
+    chars: [[Volatile<ScreenChar>; BUFFER_WIDTH]; BUFFER_HEIGHT],
 }
 
 // 画面への出力を行う
@@ -76,11 +78,11 @@ impl Writer {
                 let color_code = self.color_code;
 
                 // 現在の場所に新しい文字を書き込む
-                self.buffer.chars[row][column] = ScreenChar {
+                self.buffer.chars[row][column].write(ScreenChar {
                     ascii_character: byte,
                     color_code,
-                };
-
+                });
+                
                 // 現在の列の位置を進める
                 self.column_position += 1;
             }
