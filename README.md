@@ -4,33 +4,33 @@ https://os.phil-opp.com/ja/
 
 This OS build
 ```
-cargo build --target thumbv7em-none-eabihf
+$ cargo build --target thumbv7em-none-eabihf
 ```
 
 rustup set nightly
 ```
-rustup override set nightly
+$ rustup override set nightly
 ```
 
-rustup add components
+rustup add component
 ```
-rustup component add rust-src --toolchain nightly-aarch64-apple-darwin
+$ rustup component add rust-src --toolchain nightly-aarch64-apple-darwin
 ```
 
 create bootimage
 ```
-cargo install bootimage
-cargo bootimage
+$ cargo install bootimage
+$ cargo bootimage
 ```
 
-intall qemu
+install qemu
 ```
-brew intall qemu
+$ brew install qemu
 ```
 
 run my os in qemu
 ```
-cargo run
+$ cargo run
 ```
 cargo run equals `bootimage runner` configured in .cargo/config.toml.  
 bootimage runner command link my os and bootloader and start qemu.  
