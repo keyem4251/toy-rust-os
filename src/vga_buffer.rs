@@ -82,7 +82,7 @@ impl Writer {
                     ascii_character: byte,
                     color_code,
                 });
-                
+
                 // 現在の列の位置を進める
                 self.column_position += 1;
             }
@@ -96,7 +96,7 @@ impl Writer {
                 // 出力可能なASCIIバイトか改行コード
                 0x20..=0x7e | b'\n' => self.write_byte(byte),
                 // 出力可能なASCIIバイトではない
-                 _ => self.write_byte(0xfe),
+                _ => self.write_byte(0xfe),
             }
         }
     }
@@ -108,7 +108,7 @@ impl Writer {
 
 pub fn print_something() {
     let mut writer = Writer {
-        column_position: 0, 
+        column_position: 0,
         color_code: ColorCode::new(Color::Yellow, Color::Black),
         buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
     };
