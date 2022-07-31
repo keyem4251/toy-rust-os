@@ -1,4 +1,5 @@
 use volatile::Volatile;
+use core::fmt;
 
 // 色を定義
 #[allow(dead_code)]
@@ -104,6 +105,13 @@ impl Writer {
 
     fn new_line(&mut self) {
         // TODO
+    }
+}
+
+impl fmt::Write for Writer {
+    fn write_str(&mut self, s: &str) -> fmt::Result {
+        self.write_string(s);
+        Ok(())
     }
 }
 
