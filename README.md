@@ -32,5 +32,5 @@ run my os in qemu
 ```
 $ cargo run
 ```
-cargo run equals `bootimage runner` configured in .cargo/config.toml.  
-bootimage runner command link my os and bootloader and start qemu.  
+`cargo run` equals `bootimage runner` configured in .cargo/config.toml.  
+`bootimage runner` command link my os and bootloader and start qemu.  
