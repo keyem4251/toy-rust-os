@@ -103,17 +103,22 @@ impl Writer {
         }
     }
 
+    // すべての文字を1行上に持っていき、前の行の最初から始める
     fn new_line(&mut self) {
         for row in 1..BUFFER_HEIGHT {
             for col in 0..BUFFER_WIDTH {
+                // 現在の行/列の文字
                 let character = self.buffer.chars[row][col].read();
+                // 1行上に持っていく
                 self.buffer.chars[row - 1][col].write(character);
             }
         }
+        // 0行目はシフトしたら画面から除かれるため削除
         self.clear_row(BUFFER_HEIGHT - 1);
         self.column_position = 0;
     }
 
+    // すべての文字を空白文字で書き換えることでクリア
     fn clear_row(&mut self, row: usize) {
         let blank = ScreenChar {
             ascii_character: b' ',
