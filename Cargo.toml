@@ -17,8 +17,8 @@ version = "1.0"
 features = ["spin_no_std"]
 
 # cargo build時に使用
-[profile.dev]
-panic = "abort" # アンワインドの無効化
+#[profile.dev]
+#panic = "abort" # アンワインドの無効化
 
 # cargo build --release時に使用
 [profile.release]
