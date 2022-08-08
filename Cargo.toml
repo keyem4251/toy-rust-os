@@ -21,3 +21,8 @@ panic = "abort" # アンワインドの無効化
 # cargo build --release時に使用
 [profile.release]
 panic = "abort" # アンワインドの無効化
+
+# test時に無限ループしないよう設定
+# isa-debug-exitで値がiobaseに指定されたI/Oポートに書き込まれたらQEMUは終了する
+[package.metadata.bootimage]
+test-args = ["-device", "isa-debug-exit,iobase=0xf4,iosize=0x04"]
