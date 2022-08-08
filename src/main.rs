@@ -7,6 +7,7 @@
 use core::panic::PanicInfo;
 
 mod vga_buffer;
+mod serial;
 
 // リンカが_startという関数を探すためエントリポイントを定義
 #[no_mangle]
