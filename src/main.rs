@@ -38,9 +38,21 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
 }
 
 // パニック時に呼ばれる関数を定義
+#[cfg(not(test))]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
+    loop {}
+}
+
+// テスト用のパニック時の関数を定義
+#[cfg(test)]
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+    serial_println!("[failed]\n");
+    serial_println!("Error: {}\n", info);
+    exit_qemu(QemuExitCode::Failed);
+
     loop {}
 }
 
