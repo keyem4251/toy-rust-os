@@ -26,6 +26,7 @@ panic = "abort" # アンワインドの無効化
 
 # test時に無限ループしないよう設定
 # isa-debug-exitで値がiobaseに指定されたI/Oポートに書き込まれたらQEMUは終了する
+# serial, stdio テスト出力がコンソールにリダイレクトする（標準出力）
 [package.metadata.bootimage]
-test-args = ["-device", "isa-debug-exit,iobase=0xf4,iosize=0x04"]
+test-args = ["-device", "isa-debug-exit,iobase=0xf4,iosize=0x04", "-serial", "stdio"]
 test-success-exit-code = 33
