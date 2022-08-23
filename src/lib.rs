@@ -6,8 +6,8 @@
 
 use core::panic::PanicInfo;
 
-mod vga_buffer;
-mod serial;
+pub mod vga_buffer;
+pub mod serial;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u32)]
@@ -39,7 +39,7 @@ impl<T> Testable for T where T: Fn() {
 }
 
 #[cfg(test)]
-fn test_runner(tests: &[&dyn Testable]) {
+pub fn test_runner(tests: &[&dyn Testable]) {
     serial_println!("Running {} tests", tests.len());
     for test in tests {
         test.run();
