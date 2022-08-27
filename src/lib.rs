@@ -11,6 +11,10 @@ pub mod vga_buffer;
 pub mod serial;
 pub mod interrupts;
 
+pub fn init() {
+    interrupts::init_idt();
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u32)]
 pub enum QemuExitCode {
