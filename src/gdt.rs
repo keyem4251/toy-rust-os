@@ -1,8 +1,13 @@
 use x86_64::VirtAddr;
 use x86_64::structures::tss::TaskStateSegment;
+use x86_64::structures::gdt::{GlobalDescriptorTable, Descriptor};
 use lazy_static::lazy_static;
 
 pub const DOUBLE_FAULT_IST_INDEX: u16 = 0;
+
+pub fn init() {
+    GDT.load();
+}
 
 lazy_static! {
     static ref TSS: TaskStateSegment = {
@@ -15,5 +20,14 @@ lazy_static! {
             stack_start + STACK_SIZE // stack end
         };
         tss
+    };
+}
+
+lazy_static! {
+    static ref GDT: GlobalDescriptorTable = {
+        let mut gdt = GlobalDescriptorTable::new();
+        gdt.add_entry(Descriptor::kernel_code_segment());
+        gdt.add_entry(Descriptor::tss_segment(&TSS));
+        gdt
     };
 }
