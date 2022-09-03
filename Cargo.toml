@@ -40,3 +40,8 @@ test-timeout = 300
 [[test]]
 name = "should_panic"
 harness = false
+
+# test runnerを無効化
+[[test]]
+name = "stack_overflow"
+harness = false
