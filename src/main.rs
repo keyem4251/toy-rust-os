@@ -10,7 +10,7 @@ use toy_rust_os::println;
 // リンカが_startという関数を探すためエントリポイントを定義
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    println!("Hello World{}", "!");
+    println!("Hello World!");
 
     toy_rust_os::init();
 
@@ -18,7 +18,7 @@ pub extern "C" fn _start() -> ! {
     test_main();
 
     println!("It did not crash!");
-    loop {}
+    toy_rust_os::hlt_loop();
 }
 
 // パニック時に呼ばれる
@@ -26,7 +26,7 @@ pub extern "C" fn _start() -> ! {
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
-    loop {}
+    toy_rust_os::hlt_loop();
 }
 
 #[cfg(test)]
@@ -35,7 +35,7 @@ fn panic(info: &PanicInfo) -> ! {
     toy_rust_os::test_panic_handler(info);
 }
 
-#[test_case]
-fn trivial_assertion() {
-    assert_eq!(1, 1);
-}
+// #[test_case]
+// fn trivial_assertion() {
+//     assert_eq!(1, 1);
+// }

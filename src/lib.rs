@@ -43,14 +43,14 @@ pub fn hlt_loop() -> ! {
 }
 
 pub trait Testable {
-    fn run(&self) -> ();
+    fn run(&self);
 }
 
 impl<T> Testable for T
 where
     T: Fn(),
 {
-    fn run(&self) -> () {
+    fn run(&self) {
         serial_println!("{}..\t", core::any::type_name::<T>());
         self();
         serial_println!("[ok]");
@@ -69,7 +69,7 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
     serial_println!("[failed]\n");
     serial_println!("Error: {}\n", info);
     exit_qemu(QemuExitCode::Failed);
-    loop {}
+    hlt_loop();
 }
 
 // cargo testのエントリポイント
@@ -78,7 +78,7 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
 pub extern "C" fn _start() -> ! {
     init();
     test_main();
-    loop {}
+    hlt_loop();
 }
 
 #[cfg(test)]
