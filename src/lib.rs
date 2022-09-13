@@ -5,9 +5,9 @@
 #![reexport_test_harness_main = "test_main"]
 #![feature(abi_x86_interrupt)]
 
-use core::panic::PanicInfo;
 #[cfg(test)]
-use bootloader::{BootInfo, entry_point};
+use bootloader::{entry_point, BootInfo};
+use core::panic::PanicInfo;
 
 pub mod gdt;
 pub mod interrupts;

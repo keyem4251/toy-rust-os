@@ -16,7 +16,7 @@ pub static PICS: spin::Mutex<ChainedPics> =
 pub enum InterruptIndex {
     // Primary Interrupt Controller Index
     Timer = PIC_1_OFFSET, //32
-    Keyboard, // 33
+    Keyboard,             // 33
 }
 
 impl InterruptIndex {
@@ -69,12 +69,14 @@ extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: InterruptStackFr
 }
 
 extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: InterruptStackFrame) {
-    use x86_64::instructions::port::Port;
     use pc_keyboard::{layouts, DecodedKey, HandleControl, Keyboard, ScancodeSet1};
     use spin::Mutex;
+    use x86_64::instructions::port::Port;
 
     lazy_static! {
-        static ref KEYBOARD: Mutex<Keyboard<layouts::Jis109Key, ScancodeSet1>> = Mutex::new(Keyboard::new(layouts::Jis109Key, ScancodeSet1, HandleControl::Ignore));
+        static ref KEYBOARD: Mutex<Keyboard<layouts::Jis109Key, ScancodeSet1>> = Mutex::new(
+            Keyboard::new(layouts::Jis109Key, ScancodeSet1, HandleControl::Ignore)
+        );
     }
     let mut keyboard = KEYBOARD.lock();
     let mut port = Port::new(0x60);
@@ -90,11 +92,15 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: InterruptStac
     }
 
     unsafe {
-        PICS.lock().notify_end_of_interrupt(InterruptIndex::Keyboard.as_u8());
+        PICS.lock()
+            .notify_end_of_interrupt(InterruptIndex::Keyboard.as_u8());
     }
 }
 
-extern "x86-interrupt" fn page_fault_handler(stack_frame: InterruptStackFrame, error_code: PageFaultErrorCode) {
+extern "x86-interrupt" fn page_fault_handler(
+    stack_frame: InterruptStackFrame,
+    error_code: PageFaultErrorCode,
+) {
     use x86_64::registers::control::Cr2;
 
     println!("EXCEPTION: PAGE FAULT");

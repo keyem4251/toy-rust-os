@@ -4,8 +4,8 @@
 #![test_runner(toy_rust_os::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
-use bootloader::{BootInfo, entry_point};
 use toy_rust_os::println;
 
 // bootloaderクレートによりkernel_mainの引数の型を確認しエントリポイントとして定義
@@ -18,7 +18,10 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     use x86_64::registers::control::Cr3;
     let (level_4_page_table, _) = Cr3::read();
-    println!("Level 4 page table at: {:?}", level_4_page_table.start_address());
+    println!(
+        "Level 4 page table at: {:?}",
+        level_4_page_table.start_address()
+    );
 
     #[cfg(test)]
     test_main();
