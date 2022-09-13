@@ -14,6 +14,8 @@ pub mod interrupts;
 pub mod serial;
 pub mod vga_buffer;
 
+// bootloaderクレートによりtest_kernel_mainの引数の型を確認しエントリポイントとして定義
+#[cfg(test)]
 entry_point!(test_kernel_main);
 
 pub fn init() {

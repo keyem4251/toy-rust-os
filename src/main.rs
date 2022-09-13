@@ -8,6 +8,7 @@ use core::panic::PanicInfo;
 use bootloader::{BootInfo, entry_point};
 use toy_rust_os::println;
 
+// bootloaderクレートによりkernel_mainの引数の型を確認しエントリポイントとして定義
 entry_point!(kernel_main);
 
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
