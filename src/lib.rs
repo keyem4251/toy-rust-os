@@ -11,9 +11,9 @@ use core::panic::PanicInfo;
 
 pub mod gdt;
 pub mod interrupts;
+pub mod memory;
 pub mod serial;
 pub mod vga_buffer;
-pub mod memory;
 
 // bootloaderクレートによりtest_kernel_mainの引数の型を確認しエントリポイントとして定義
 #[cfg(test)]
