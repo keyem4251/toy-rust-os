@@ -1,11 +1,21 @@
+use x86_64::structures::paging::OffsetPageTable;
 use x86_64::{structures::paging::PageTable, PhysAddr, VirtAddr};
+
+/// # Safety
+// 全物理メモリが渡された physical_memory_offset （だけずらしたうえ）で仮想メモリへとマップされていることを呼び出し元が保証しなければならない。
+// また &mut 参照が複数の名称を持つこと（mutable aliasingといい、動作が未定義）につながるためこの関数は一度しか呼び出してはならない
+// ページテーブルへの参照が可変（&mut）なので複数呼ばれると動作が不安定
+pub unsafe fn init(physical_memory_offset: VirtAddr) -> OffsetPageTable<'static> {
+    let level_4_table = active_level_4_table(physical_memory_offset);
+    OffsetPageTable::new(level_4_table, physical_memory_offset)
+}
 
 /// # Safety
 // 有効なレベル4テーブルへの参照を返す
 // 全物理メモリが渡された physical_memory_offset （だけずらしたうえ）で仮想メモリへとマップされていることを呼び出し元が保証しなければならない。
 // また &mut 参照が複数の名称を持つこと（mutable aliasingといい、動作が未定義）につながるためこの関数は一度しか呼び出してはならない
 // ページテーブルへの参照が可変（&mut）なので複数呼ばれると動作が不安定
-pub unsafe fn active_level_4_table(physical_memory_offset: VirtAddr) -> &'static mut PageTable {
+unsafe fn active_level_4_table(physical_memory_offset: VirtAddr) -> &'static mut PageTable {
     use x86_64::registers::control::Cr3;
 
     // Cr3レジスタから有効なレベル4テーブルの物理フレームを読む
