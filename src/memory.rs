@@ -47,11 +47,12 @@ fn translate_addr_inner(addr: VirtAddr, physical_memory_offset: VirtAddr) -> Opt
         addr.p2_index(),
         addr.p1_index(),
     ];
+    // 物理テーブルのフレーム
     let mut frame = level_4_table_frame;
 
     // 複数層のページテーブルをたどる
     for &index in &table_indexes {
-        // フレームをページテーブルの参照に変換する
+        // 物理テーブルのフレームからオフセットを足して仮想アドレスを取得、仮想アドレスからページテーブルの参照に変換する
         let virt = physical_memory_offset + frame.start_address().as_u64();
         let table_ptr: *const PageTable = virt.as_ptr();
         let table = unsafe { &*table_ptr };

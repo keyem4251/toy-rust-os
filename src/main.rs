@@ -6,25 +6,27 @@
 
 use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
-use toy_rust_os::println;
+use toy_rust_os::{println, memory::transalate_addr};
 
 // bootloaderクレートによりkernel_mainの引数の型を確認しエントリポイントとして定義
 entry_point!(kernel_main);
 
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
-    use toy_rust_os::memory::active_level_4_table;
     use x86_64::VirtAddr;
 
     println!("Hello World!");
     toy_rust_os::init();
 
     let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
-    let l4_table = unsafe { active_level_4_table(phys_mem_offset) };
-
-    for (i, entry) in l4_table.iter().enumerate() {
-        if !entry.is_unused() {
-            println!("L4 Entry {}: {:?}", i, entry);
-        }
+    let addresses = [
+        0xb8000,0x201008,0x0100_0020_1a10,boot_info.physical_memory_offset
+    ];
+    for &address in &addresses {
+        let virt = VirtAddr::new(address);
+        let phys = unsafe {
+            transalate_addr(virt, phys_mem_offset)
+        };
+        println!("{:?} -> {:?}", virt, phys);
     }
 
     #[cfg(test)]
