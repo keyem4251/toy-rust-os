@@ -6,7 +6,7 @@
 
 use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
-use toy_rust_os::{memory::transalate_addr, println};
+use toy_rust_os::println;
 
 // bootloaderクレートによりkernel_mainの引数の型を確認しエントリポイントとして定義
 entry_point!(kernel_main);

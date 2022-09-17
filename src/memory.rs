@@ -1,5 +1,5 @@
 use x86_64::structures::paging::OffsetPageTable;
-use x86_64::{structures::paging::PageTable, PhysAddr, VirtAddr};
+use x86_64::{structures::paging::PageTable, VirtAddr};
 
 /// # Safety
 // 全物理メモリが渡された physical_memory_offset （だけずらしたうえ）で仮想メモリへとマップされていることを呼び出し元が保証しなければならない。
