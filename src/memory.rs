@@ -1,4 +1,4 @@
-use x86_64::{structures::paging::PageTable, VirtAddr, PhysAddr};
+use x86_64::{structures::paging::PageTable, PhysAddr, VirtAddr};
 
 /// # Safety
 // 有効なレベル4テーブルへの参照を返す
@@ -7,7 +7,7 @@ use x86_64::{structures::paging::PageTable, VirtAddr, PhysAddr};
 // ページテーブルへの参照が可変（&mut）なので複数呼ばれると動作が不安定
 pub unsafe fn active_level_4_table(physical_memory_offset: VirtAddr) -> &'static mut PageTable {
     use x86_64::registers::control::Cr3;
-    
+
     // Cr3レジスタから有効なレベル4テーブルの物理フレームを読む
     let (level_4_table_frame, _) = Cr3::read();
 
@@ -27,18 +27,26 @@ pub unsafe fn active_level_4_table(physical_memory_offset: VirtAddr) -> &'static
 /// # Safety
 // 与えられた仮想アドレスを対応する物理アドレスに変換し、アドレスがマップされていない場合はNoneを返す
 // 全物理メモリが渡された physical_memory_offset （だけずらしたうえ）で仮想メモリへとマップされていることを呼び出し元が保証しなければならない。
-pub unsafe fn transalate_addr(addr: VirtAddr, physical_memory_offset: VirtAddr) -> Option<PhysAddr> {
+pub unsafe fn transalate_addr(
+    addr: VirtAddr,
+    physical_memory_offset: VirtAddr,
+) -> Option<PhysAddr> {
     translate_addr_inner(addr, physical_memory_offset)
 }
 
 fn translate_addr_inner(addr: VirtAddr, physical_memory_offset: VirtAddr) -> Option<PhysAddr> {
-    use x86_64::structures::paging::page_table::FrameError;
     use x86_64::registers::control::Cr3;
+    use x86_64::structures::paging::page_table::FrameError;
 
     // Cr3レジスタから有効なレベル4テーブルの物理フレームを読む
     let (level_4_table_frame, _) = Cr3::read();
 
-    let table_indexes = [addr.p4_index(), addr.p3_index(), addr.p2_index(), addr.p1_index()];
+    let table_indexes = [
+        addr.p4_index(),
+        addr.p3_index(),
+        addr.p2_index(),
+        addr.p1_index(),
+    ];
     let mut frame = level_4_table_frame;
 
     // 複数層のページテーブルをたどる
@@ -46,7 +54,7 @@ fn translate_addr_inner(addr: VirtAddr, physical_memory_offset: VirtAddr) -> Opt
         // フレームをページテーブルの参照に変換する
         let virt = physical_memory_offset + frame.start_address().as_u64();
         let table_ptr: *const PageTable = virt.as_ptr();
-        let table = unsafe {&*table_ptr};
+        let table = unsafe { &*table_ptr };
 
         // ページテーブルエントリを読んでframeを更新する
         let entry = &table[index];
