@@ -1,8 +1,8 @@
+use bootloader::bootinfo::{MemoryMap, MemoryRegionType};
 use x86_64::structures::paging::{
     FrameAllocator, Mapper, OffsetPageTable, Page, PhysFrame, Size4KiB,
 };
 use x86_64::{structures::paging::PageTable, PhysAddr, VirtAddr};
-use bootloader::bootinfo::{MemoryMap, MemoryRegionType};
 
 // ブートローダのメモリマップから使用可能なフレームを返すFrameAllocator
 pub struct BootInfoFrameAllocator {
