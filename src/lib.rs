@@ -14,6 +14,9 @@ pub mod interrupts;
 pub mod memory;
 pub mod serial;
 pub mod vga_buffer;
+pub mod allocator;
+
+extern crate alloc;
 
 // bootloaderクレートによりtest_kernel_mainの引数の型を確認しエントリポイントとして定義
 #[cfg(test)]
