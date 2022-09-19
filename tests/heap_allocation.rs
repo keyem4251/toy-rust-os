@@ -8,8 +8,8 @@ extern crate alloc;
 
 use alloc::{boxed::Box, vec::Vec};
 use bootloader::{entry_point, BootInfo};
-use toy_rust_os::{hlt_loop, allocator::HEAP_SIZE};
 use core::panic::PanicInfo;
+use toy_rust_os::{allocator::HEAP_SIZE, hlt_loop};
 
 entry_point!(main);
 
@@ -20,12 +20,8 @@ fn main(boot_info: &'static BootInfo) -> ! {
 
     toy_rust_os::init();
     let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
-    let mut mapper = unsafe {
-        memory::init(phys_mem_offset)
-    };
-    let mut frame_allocator = unsafe {
-        BootInfoFrameAllocator::init(&boot_info.memory_map)
-    };
+    let mut mapper = unsafe { memory::init(phys_mem_offset) };
+    let mut frame_allocator = unsafe { BootInfoFrameAllocator::init(&boot_info.memory_map) };
     allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
 
     test_main();

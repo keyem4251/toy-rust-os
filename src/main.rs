@@ -9,7 +9,7 @@ extern crate alloc;
 use alloc::{boxed::Box, vec::Vec};
 use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
-use toy_rust_os::{println, allocator};
+use toy_rust_os::{allocator, println};
 
 // bootloaderクレートによりkernel_mainの引数の型を確認しエントリポイントとして定義
 entry_point!(kernel_main);
