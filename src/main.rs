@@ -6,9 +6,9 @@
 
 extern crate alloc;
 
+use alloc::boxed::Box;
 use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
-use alloc::boxed::Box;
 use toy_rust_os::println;
 
 // bootloaderクレートによりkernel_mainの引数の型を確認しエントリポイントとして定義
