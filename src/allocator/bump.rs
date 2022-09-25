@@ -19,6 +19,7 @@ impl BumpAllocator {
         }
     }
 
+    /// # Safety
     // 与えられたヒープの位置、サイズで初期化する
     // 呼び出し側で有効なメモリの範囲を指定する必要があるためunsafe
     pub unsafe fn init(&mut self, heap_start: usize, heap_size: usize) {
