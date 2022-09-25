@@ -38,6 +38,8 @@ unsafe impl GlobalAlloc for Locked<BumpAllocator> {
             None => return ptr::null_mut(),
         };
 
+        // 初期化時に決められたヒープのサイズより割当る位置が大きい場合はout of memory
+        // 割り当てられる場合は割当位置をnextに指定、割当位置の最初の位置を返す
         if alloc_end > bump.heap_end {
             ptr::null_mut() // out of memory
         } else {

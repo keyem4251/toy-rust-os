@@ -64,6 +64,7 @@ impl<A> Locked<A> {
     }
 }
 
+// データ型によってCPUから要求されるメモリの位置が決まっているため調整を行う
 fn align_up(addr: usize, align: usize) -> usize {
     let remainder = addr % align;
     if remainder == 0 {
