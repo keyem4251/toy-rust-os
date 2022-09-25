@@ -52,13 +52,24 @@ pub struct Locked<A> {
     inner: spin::Mutex<A>,
 }
 
-impl <A> Locked<A> {
+impl<A> Locked<A> {
     pub const fn new(inner: A) -> Self {
-        Locked { inner: spin::Mutex::new(inner) }
+        Locked {
+            inner: spin::Mutex::new(inner),
+        }
     }
 
     pub fn lock(&self) -> spin::MutexGuard<A> {
         self.inner.lock()
+    }
+}
+
+fn align_up(addr: usize, align: usize) -> usize {
+    let remainder = addr % align;
+    if remainder == 0 {
+        addr
+    } else {
+        addr - remainder + align
     }
 }
 
