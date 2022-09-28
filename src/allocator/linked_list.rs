@@ -1,3 +1,6 @@
+use super::align_up;
+use core::mem;
+
 pub struct LinkedListAllocator {
     head: ListNode,
 }
@@ -14,8 +17,18 @@ impl LinkedListAllocator {
         self.add_free_region(heap_start, heap_size);
     }
 
+    // リストの最初のメモリ領域
     unsafe fn add_free_region(&mut self, addr: usize, size: usize) {
-        todo!();
+        // 空いているメモリ領域がListNodeで確保できることの確認
+        assert_eq!(align_up(addr, mem::align_of::<ListNode>()), addr);
+        assert!(size >= mem::size_of::<ListNode>());
+
+        // 新しいListNodeを作成しlistに追加する
+        let mut node = ListNode::new(size);
+        node.next = self.head.next.take();
+        let node_ptr = addr as *mut ListNode;
+        node_ptr.write(node);
+        self.head.next = Some(&mut *node_ptr)
     }
 }
 
