@@ -17,7 +17,7 @@ impl LinkedListAllocator {
         self.add_free_region(heap_start, heap_size);
     }
 
-    // リストの最初のメモリ領域
+    // 空いているメモリ領域にLinkedListを追加
     unsafe fn add_free_region(&mut self, addr: usize, size: usize) {
         // 空いているメモリ領域がListNodeで確保できることの確認
         assert_eq!(align_up(addr, mem::align_of::<ListNode>()), addr);
@@ -30,6 +30,8 @@ impl LinkedListAllocator {
         node_ptr.write(node);
         self.head.next = Some(&mut *node_ptr)
     }
+
+
 }
 
 struct ListNode {
