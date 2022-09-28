@@ -17,7 +17,8 @@ impl LinkedListAllocator {
         self.add_free_region(heap_start, heap_size);
     }
 
-    // 空いているメモリ領域にLinkedListを追加
+    // 空いているメモリ領域をLinkedListに追加
+    // initでしか呼んでいないがメモリを開放するdeallocでも呼ばれる可能性がある
     unsafe fn add_free_region(&mut self, addr: usize, size: usize) {
         // 空いているメモリ領域がListNodeで確保できることの確認
         assert_eq!(align_up(addr, mem::align_of::<ListNode>()), addr);
