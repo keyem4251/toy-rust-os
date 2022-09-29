@@ -32,7 +32,48 @@ impl LinkedListAllocator {
         self.head.next = Some(&mut *node_ptr)
     }
 
+    // 空き領域を探して、LinkedListから外してListNodeを返す
+    fn find_region(&mut self, size: usize, align: usize) -> Option<(&'static mut ListNode, usize)> {
+        // 現在のlist nodeを取得する
+        let mut current = &mut self.head;
 
+        // list nodeをループしlinked listの中でメモリが十分空いているものを探す
+        while let Some(ref mut region) = current.next {
+            if let Ok(alloc_start) = Self::alloc_from_region(region, size, align) {
+                // 空き領域が見つかった場合linked listから削除する
+                let next = region.next.take();
+                let ret = Some((current.next.take().unwrap(), alloc_start));
+                current.next = next;
+                return ret;
+            } else {
+                current = current.next.as_mut().unwrap();
+            }
+        }
+
+        // size, alignに合う空き領域が見つからない
+        None
+    }
+
+    // 渡されたLinkedNode（空き領域）に割当を行う
+    // 割当可能ならメモリの位置を返す
+    fn alloc_from_region(region: &ListNode, size: usize, align: usize) -> Result<usize, ()> {
+        let alloc_start = align_up(region.start_addr(), align);
+        let alloc_end = alloc_start.checked_add(size).ok_or(())?;
+
+        if alloc_end > region.end_addr() {
+            // 領域が小さい
+            return Err(());
+        }
+
+        let excess_size = region.end_addr() - alloc_end;
+        if excess_size > 0 && excess_size < mem::size_of::<ListNode>() {
+            // ListNodeの保持している領域の残りが小さい
+            return Err(());
+        }
+
+        // 割当のための領域確保
+        Ok(alloc_start)
+    }
 }
 
 struct ListNode {
