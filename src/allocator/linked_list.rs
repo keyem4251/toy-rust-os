@@ -9,7 +9,9 @@ pub struct LinkedListAllocator {
 
 impl LinkedListAllocator {
     pub const fn new() -> Self {
-        LinkedListAllocator { head: ListNode::new(0) }
+        LinkedListAllocator {
+            head: ListNode::new(0),
+        }
     }
 
     /// # Safety
@@ -79,7 +81,10 @@ impl LinkedListAllocator {
 
     // 受け取ったlayoutをListNodeで保存するために調整する
     fn size_align(layout: Layout) -> (usize, usize) {
-        let layout = layout.align_to(mem::align_of::<ListNode>()).expect("adjusting alignment failed").pad_to_align();
+        let layout = layout
+            .align_to(mem::align_of::<ListNode>())
+            .expect("adjusting alignment failed")
+            .pad_to_align();
         let size = layout.size().max(mem::size_of::<ListNode>());
         (size, layout.align())
     }
