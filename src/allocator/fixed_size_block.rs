@@ -1,6 +1,6 @@
 use super::Locked;
 use alloc::alloc::{GlobalAlloc, Layout};
-use core::{ptr, mem, ptr::NonNull};
+use core::{mem, ptr, ptr::NonNull};
 
 const BLOCK_SIZES: &[usize] = &[8, 16, 32, 64, 128, 256, 512, 1024, 2048];
 
@@ -55,7 +55,7 @@ unsafe impl GlobalAlloc for Locked<FixedSizeBlockAllocator> {
                         // 空き領域のリストからnodeを削除して割当を行う
                         allocator.list_heads[index] = node.next.take();
                         node as *mut ListNode as *mut u8
-                    },
+                    }
                     None => {
                         // 空き領域が存在しないため新しい領域を割り当てる
                         let block_size = BLOCK_SIZES[index];
@@ -64,7 +64,7 @@ unsafe impl GlobalAlloc for Locked<FixedSizeBlockAllocator> {
                         allocator.fallback_alloc(layout)
                     }
                 }
-            },
+            }
             None => allocator.fallback_alloc(layout),
         }
     }
@@ -83,11 +83,11 @@ unsafe impl GlobalAlloc for Locked<FixedSizeBlockAllocator> {
                 let new_node_ptr = ptr as *mut ListNode;
                 new_node_ptr.write(new_node);
                 allocator.list_heads[index] = Some(&mut *new_node_ptr);
-            },
+            }
             None => {
                 let ptr = NonNull::new(ptr).unwrap();
                 allocator.fallback_allocator.deallocate(ptr, layout);
-            },
+            }
         }
     }
 }
