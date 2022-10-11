@@ -2,8 +2,10 @@ use core::{pin::Pin, task::{Context, Poll}};
 
 use conquer_once::spin::OnceCell;
 use crossbeam_queue::ArrayQueue;
-use crate::println;
+use pc_keyboard::{Keyboard, layouts, DecodedKey, HandleControl, ScancodeSet1};
+use crate::{println, print};
 use futures_util::task::AtomicWaker;
+use futures_util::stream::{StreamExt, Stream};
 
 static SCANCODE_QUEUE: OnceCell<ArrayQueue<u8>> = OnceCell::uninit();
 static WAKER: AtomicWaker = AtomicWaker::new();
@@ -34,12 +36,6 @@ impl ScancodeStream {
     }
 }
 
-pub trait Stream {
-    type Item;
-
-    fn poll_next(self: Pin<&mut Self>, cx: &mut Context) -> Poll<Option<Self::Item>>;
-}
-
 impl Stream for ScancodeStream {
     type Item = u8;
 
@@ -57,6 +53,22 @@ impl Stream for ScancodeStream {
                 Poll::Ready(Some(scancode))
             },
             Err(crossbeam_queue::PopError) => Poll::Pending,
+        }
+    }
+}
+
+pub async fn print_keyboard() {
+    let mut scancodes = ScancodeStream::new();
+    let mut keyboard = Keyboard::new(layouts::Jis109Key, ScancodeSet1, HandleControl::Ignore);
+
+    while let Some(scancode) = scancodes.next().await {
+        if let Ok(Some(key_event)) = keyboard.add_byte(scancode) {
+            if let Some(key) = keyboard.process_keyevent(key_event) {
+                match key {
+                    DecodedKey::Unicode(character) => print!("{}", character),
+                    DecodedKey::RawKey(key) => print!("{:?}", key),
+                }
+            }
         }
     }
 }

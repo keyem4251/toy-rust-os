@@ -7,9 +7,8 @@
 extern crate alloc;
 
 use bootloader::{entry_point, BootInfo};
-use core::num;
 use core::panic::PanicInfo;
-use toy_rust_os::task::{simple_executor::SimpleExecutor, Task};
+use toy_rust_os::task::{simple_executor::SimpleExecutor, Task, keyboard};
 use toy_rust_os::{allocator, println};
 
 // bootloaderクレートによりkernel_mainの引数の型を確認しエントリポイントとして定義
@@ -30,6 +29,7 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     let mut executor = SimpleExecutor::new();
     executor.spawn(Task::new(example_task()));
+    executor.spawn(Task::new(keyboard::print_keyboard()));
     executor.run();
 
     #[cfg(test)]
