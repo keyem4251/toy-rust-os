@@ -28,6 +28,11 @@ features = ["alloc"]
 version = "0.2.0"
 default-features = false
 
+[dependencies.futures-util]
+version = "0.3.4"
+default-features = false
+features = ["alloc"]
+
 # cargo build時に使用
 #[profile.dev]
 #panic = "abort" # アンワインドの無効化
