@@ -1,11 +1,14 @@
-use core::{pin::Pin, task::{Context, Poll}};
+use core::{
+    pin::Pin,
+    task::{Context, Poll},
+};
 
+use crate::{print, println};
 use conquer_once::spin::OnceCell;
 use crossbeam_queue::ArrayQueue;
-use pc_keyboard::{Keyboard, layouts, DecodedKey, HandleControl, ScancodeSet1};
-use crate::{println, print};
+use futures_util::stream::{Stream, StreamExt};
 use futures_util::task::AtomicWaker;
-use futures_util::stream::{StreamExt, Stream};
+use pc_keyboard::{layouts, DecodedKey, HandleControl, Keyboard, ScancodeSet1};
 
 static SCANCODE_QUEUE: OnceCell<ArrayQueue<u8>> = OnceCell::uninit();
 static WAKER: AtomicWaker = AtomicWaker::new();
@@ -31,7 +34,9 @@ pub struct ScancodeStream {
 
 impl ScancodeStream {
     pub fn new() -> Self {
-        SCANCODE_QUEUE.try_init_once(|| ArrayQueue::new(100)).expect("ScancodeStream::new should only be called once");
+        SCANCODE_QUEUE
+            .try_init_once(|| ArrayQueue::new(100))
+            .expect("ScancodeStream::new should only be called once");
         ScancodeStream { _private: () }
     }
 }
@@ -41,7 +46,7 @@ impl Stream for ScancodeStream {
 
     fn poll_next(self: Pin<&mut Self>, cx: &mut Context) -> Poll<Option<Self::Item>> {
         let queue = SCANCODE_QUEUE.try_get().expect("not initialized");
-        
+
         if let Ok(scancode) = queue.pop() {
             return Poll::Ready(Some(scancode));
         }
@@ -51,7 +56,7 @@ impl Stream for ScancodeStream {
             Ok(scancode) => {
                 WAKER.take();
                 Poll::Ready(Some(scancode))
-            },
+            }
             Err(crossbeam_queue::PopError) => Poll::Pending,
         }
     }

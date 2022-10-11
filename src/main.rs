@@ -8,7 +8,7 @@ extern crate alloc;
 
 use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
-use toy_rust_os::task::{executor::Executor, Task, keyboard};
+use toy_rust_os::task::{executor::Executor, keyboard, Task};
 use toy_rust_os::{allocator, println};
 
 // bootloaderクレートによりkernel_mainの引数の型を確認しエントリポイントとして定義

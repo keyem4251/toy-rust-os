@@ -2,12 +2,13 @@ use alloc::boxed::Box;
 use core::{
     future::Future,
     pin::Pin,
-    task::{Context, Poll}, sync::atomic::{AtomicU64, Ordering},
+    sync::atomic::{AtomicU64, Ordering},
+    task::{Context, Poll},
 };
 
-pub mod simple_executor;
-pub mod keyboard;
 pub mod executor;
+pub mod keyboard;
+pub mod simple_executor;
 
 pub struct Task {
     id: TaskId,

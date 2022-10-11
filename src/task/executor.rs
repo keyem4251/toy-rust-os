@@ -1,6 +1,6 @@
 use super::{Task, TaskId};
 use alloc::{collections::BTreeMap, sync::Arc, task::Wake};
-use core::task::{Waker, Context, Poll};
+use core::task::{Context, Poll, Waker};
 use crossbeam_queue::ArrayQueue;
 
 pub struct Executor {
@@ -11,7 +11,11 @@ pub struct Executor {
 
 impl Executor {
     pub fn new() -> Self {
-        Executor { tasks: BTreeMap::new(), task_queue: Arc::new(ArrayQueue::new(100)), waker_cache: BTreeMap::new() }
+        Executor {
+            tasks: BTreeMap::new(),
+            task_queue: Arc::new(ArrayQueue::new(100)),
+            waker_cache: BTreeMap::new(),
+        }
     }
 
     pub fn spawn(&mut self, task: Task) {
@@ -37,14 +41,16 @@ impl Executor {
                 None => continue, // タスクが存在しない
             };
 
-            let waker = waker_cache.entry(task_id).or_insert_with(|| TaskWaker::new(task_id, task_queue.clone()));
+            let waker = waker_cache
+                .entry(task_id)
+                .or_insert_with(|| TaskWaker::new(task_id, task_queue.clone()));
             let mut context = Context::from_waker(waker);
             match task.poll(&mut context) {
                 Poll::Ready(()) => {
                     // タスクが完了したのでタスクとそのキャッシュされたwakerを取り除く
                     tasks.remove(&task_id);
                     waker_cache.remove(&task_id);
-                },
+                }
                 Poll::Pending => {}
             }
         }
@@ -59,7 +65,7 @@ impl Executor {
 
     fn sleep_if_idle(&self) {
         use x86_64::instructions::interrupts::{self, enable_and_hlt};
-        
+
         interrupts::disable();
         if self.task_queue.is_empty() {
             enable_and_hlt();
@@ -80,7 +86,10 @@ impl TaskWaker {
     }
 
     fn new(task_id: TaskId, task_queue: Arc<ArrayQueue<TaskId>>) -> Waker {
-        Waker::from(Arc::new(TaskWaker { task_id, task_queue }))
+        Waker::from(Arc::new(TaskWaker {
+            task_id,
+            task_queue,
+        }))
     }
 }
 
