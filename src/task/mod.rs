@@ -6,6 +6,7 @@ use core::{
 };
 
 pub mod simple_executor;
+pub mod keyboard;
 
 pub struct Task {
     future: Pin<Box<dyn Future<Output = ()>>>,
